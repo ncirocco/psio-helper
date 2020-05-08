@@ -12,7 +12,10 @@ import (
 )
 
 func main() {
-	originPath := "."
+	originPath, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
 	outputPath := "output"
 
 	if len(os.Args) > 1 {
@@ -27,7 +30,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err := mergeBins(originPath, outputPath)
+	err = mergeBins(originPath, outputPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -76,6 +79,8 @@ func getFilesByExtension(path string, extension string) ([]string, error) {
 	err := filepath.Walk(path,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
+				fmt.Println(path)
+				fmt.Println("aca")
 				return err
 			}
 
