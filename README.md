@@ -27,6 +27,10 @@ For an advance usage open the power shell in the directory where the PSIOHelper 
 Open a terminal, navigate to the location where the PSIOHelper binary is placed and execute it passing any of the available [commands](https://github.com/ncirocco/psio-helper/blob/master/README.md#commands).
 
 ## Commands
+**Windows note:** In windows you will have to write `.\psioHelper.exe` instad of `./psioHelper` for this commands to run in shell.
+
+**Linux/MacOS note:** If you downloaded the Linux or Mac version of the binary, rename it from `psioHelperLinux`/`psioHelperMac` to `psioHelper` for the following commands to work, or call them using `./psioHelperLinux`/`./psioHelperMac` as base.
+
 `./psioHelper -h` displays all the available commands
 
 `./psioHelper <command> -h` displays help for the given command
