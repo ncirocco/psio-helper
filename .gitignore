@@ -15,3 +15,5 @@
 # vendor/
 
 /output
+main
+main.exe
