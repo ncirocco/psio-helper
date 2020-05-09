@@ -1,6 +1,6 @@
 # PSIO Helper
 
-PSIOHelper is a cross platform program written in GoLang to prepare your cue/bin files for the PSIO cardtrige. It runs in Windows, Linux and MacOS.
+PSIOHelper is a cross platform standalone program written in GoLang to prepare cue/bin files for the PSIO cardtrige. It runs in Windows, Linux and MacOS.
 
 ## Features
 Merge multibin files into single bin
@@ -10,11 +10,11 @@ Convert CUE sheets to CU2 sheets
 Download game covers automatically
 
 ## Download
-[Windows](https://github.com/ncirocco/psio-helper)
+[Windows](https://github.com/ncirocco/psio-helper/releases/download/v0.1/psioHelper.exe)
 
-[Linux](https://github.com/ncirocco/psio-helper)
+[Linux](https://github.com/ncirocco/psio-helper/releases/download/v0.1/psioHelperLinux)
 
-[Mac](https://github.com/ncirocco/psio-helper)
+[Mac](https://github.com/ncirocco/psio-helper/releases/download/v0.1/psioHelperMac)
 
 ## Usage
 
@@ -77,4 +77,5 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 `./psioHelper` images -dir="MyISOsFolder"
 
 
-
+## Disclaimer
+This software comes with no warranties of any kind whatsoever. Use it at your own risk.
