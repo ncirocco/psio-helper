@@ -182,7 +182,7 @@ func usage() {
 	fmt.Println("\nCommands:")
 	fmt.Println("  auto - Merges bin files and generates cu2 sheets for all the files in the given directory")
 	fmt.Println("  merge - Merges all the bin files in a given directory")
-	fmt.Println("  cu2 - Generetes the cu2 sheet for each cue sheet in the given directory")
+	fmt.Println("  cu2 - Generates the cu2 sheet for each cue sheet in the given directory")
 	fmt.Println("  image - Downloads covers for the bin files in the given directory")
 	fmt.Print("\n")
 	fmt.Printf("To see more details for a particular command run %s <command> -h\n", os.Args[0])
