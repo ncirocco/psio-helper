@@ -21,10 +21,10 @@ Download game covers automatically
 ### Windows
 For the most basic usage, place the downloaded file in the same folder that your cue/bin files are and execute the program. This will create a folder called `output` and place each game in its own folder, merge its bin files, create a CU2 sheet and download the cover image.
 
-For an advance usage open the power shell in the directory where the PSIOHelper binary is placed and execute the program passing any of the available commands.
+For an advance usage open the power shell in the directory where the PSIOHelper binary is placed and execute the program passing any of the available [commands](https://github.com/ncirocco/psio-helper/blob/master/README.md#commands).
 
 ### Linux/MacOS
-Open a terminal, navigate to the location where the PSIOHelper binary is placed and execute it passing any of the available commands.
+Open a terminal, navigate to the location where the PSIOHelper binary is placed and execute it passing any of the available [commands](https://github.com/ncirocco/psio-helper/blob/master/README.md#commands).
 
 ## Commands
 `./psioHelper -h` displays all the available commands
