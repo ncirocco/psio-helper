@@ -17,3 +17,5 @@
 /output
 main
 main.exe
+/bin/*
+/ISOs

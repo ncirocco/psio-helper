@@ -17,9 +17,11 @@ import (
 	psxserialnumber "github.com/ncirocco/psx-serial-number"
 )
 
+const cu2Extension string = "cu2"
 const cueExtension string = "cue"
 const binExtension string = "bin"
 const imagesEndpoint string = "https://ncirocco.github.io/PSIO-Library/images/covers_by_id/%s.bmp"
+const fileNameMaxLength int = 60
 
 func main() {
 	defaultOriginDir, err := os.Getwd()
@@ -107,6 +109,11 @@ func all(originDir string, destinationDir string) error {
 		return err
 	}
 
+	err = trimFileNames(destinationDir)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -170,9 +177,6 @@ func getFilesByExtension(path string, extension string) ([]string, error) {
 
 			return nil
 		})
-	if err != nil {
-		log.Println(err)
-	}
 
 	return files, err
 }
@@ -207,7 +211,7 @@ func getImages(dir string) error {
 
 		err = downloadFile(serial, filepath.Dir(bin))
 		if err != nil {
-			fmt.Printf("%s for %s\n", err, bin)
+			fmt.Printf("%s for %s - serial %s\n", err, bin, serial)
 			continue
 		}
 	}
@@ -235,5 +239,36 @@ func downloadFile(code string, dir string) error {
 	defer out.Close()
 
 	_, err = io.Copy(out, resp.Body)
+	return err
+}
+
+// PSIO does not support files with names longer than 60 chars.
+func trimFileNames(dir string) error {
+	err := filepath.Walk(dir,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			ext := filepath.Ext(path)
+			if (ext != "."+binExtension && ext != "."+cueExtension && ext != "."+cu2Extension) || len(filepath.Base(path)) <= fileNameMaxLength {
+				return nil
+			}
+
+			fmt.Printf("File name for %s is longer than 60, trimming it.\n", filepath.Base(path))
+
+			newName := filepath.Join(filepath.Dir(path), filepath.Base(path)[:fileNameMaxLength-len(ext)]+ext)
+
+			if _, err := os.Stat(newName); err == nil {
+				fmt.Printf("can't rename %s. please rename it manually", filepath.Base(path))
+
+				return nil
+			}
+
+			os.Rename(path, newName)
+
+			return nil
+		})
+
 	return err
 }
