@@ -19,9 +19,9 @@ Download game covers automatically
 ## Usage
 
 ### Windows
-For the most basic usage, place the downloaded file in the same folder that your cue/bin files are and execute the program. This will create a folder called `output` and place each game in its own folder, merge its bin files, create a CU2 sheet and download the cover image.
+For the most basic use, place the downloaded file in the same folder that your cue/bin files are and execute the program. This will create a folder called `output` and place each game in its own folder, merge its bin files, create a CU2 sheet and download the cover image.
 
-For an advance usage open the power shell in the directory where the PSIOHelper binary is placed and execute the program passing any of the available [commands](https://github.com/ncirocco/psio-helper/blob/master/README.md#commands).
+For an advance use open the power shell in the directory where the PSIOHelper binary is placed and execute the program passing any of the available [commands](https://github.com/ncirocco/psio-helper/blob/master/README.md#commands).
 
 ### Linux/MacOS
 Open a terminal, navigate to the location where the PSIOHelper binary is placed and execute it passing any of the available [commands](https://github.com/ncirocco/psio-helper/blob/master/README.md#commands).
@@ -36,12 +36,12 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 `./psioHelper <command> -h` displays help for the given command
 
 ### Auto
-`./psioHelper auto` - Merges bin files and generates cu2 sheets for all the files in the given directory. It's the default behavior if no arguments are passed.
+`./psioHelper auto` - Merges bin files and generates cu2 sheets for all the files in the given directory. It's the default behavior if no command and arguments are passed (same that just double click the executable).
 
 #### Arguments
 `dir`: Directory containing the files to be processed. By default uses the current directory.
 
-`destinationDir`: Directory to store the processed files, if it doesn't exists it gets created. By default it creates an `output` folder in the current directory.
+`destinationDir`: Directory to store the processed files, if it doesn't exists it gets created. If this argument is not passed it creates an `output` folder in the current directory.
 
 #### Example
 `./psioHelper auto -dir="MyISOsFolder" -destinationDir="newEmptyFolder"`
@@ -62,6 +62,7 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 
 #### Arguments
 `dir`: Directory containing the files to be processed. By default uses the current directory.
+
 `removeCue`: If passed the original cue files will be removed
 
 #### Example
