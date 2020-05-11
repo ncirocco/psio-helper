@@ -12,11 +12,11 @@ Download game covers automatically
 Shorten file names longer than 60 characters 
 
 ## Download
-[Windows](https://github.com/ncirocco/psio-helper/releases/download/v0.2.0/psioHelper.exe)
+[Windows](https://github.com/ncirocco/psio-helper/releases/download/v0.2.1/psioHelper.exe)
 
-[Linux](https://github.com/ncirocco/psio-helper/releases/download/v0.2.0/psioHelperLinux)
+[Linux](https://github.com/ncirocco/psio-helper/releases/download/v0.2.1/psioHelperLinux)
 
-[Mac](https://github.com/ncirocco/psio-helper/releases/download/v0.2.0/psioHelperMac)
+[Mac](https://github.com/ncirocco/psio-helper/releases/download/v0.2.1/psioHelperMac)
 
 ## Usage
 
