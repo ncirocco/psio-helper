@@ -79,6 +79,17 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 #### Example
 `./psioHelper` images -dir="MyISOsFolder"
 
+### Multidisc
+`./psioHelper multidisc` - Groups the discs that belong to the same game and generates the necessary multidisc.lst files
+
+#### Arguments
+`dir`: "Directory containing the bin files. By default uses the current directory.
+
+**IMPORANT:** This command will modify your files without creating a backup.
+
+#### Example
+`./psioHelper` multidisc -dir="MyISOsFolder"
+
 
 ## Disclaimer
 This software comes with no warranties of any kind whatsoever. Use it at your own risk.
