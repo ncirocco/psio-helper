@@ -230,7 +230,7 @@ func Multidisc(dir string) error {
 		defer f.Close()
 
 		for _, bin := range bins {
-			f.WriteString(bin + "\n")
+			f.WriteString(bin + "\r\n")
 		}
 	}
 
