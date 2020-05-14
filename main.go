@@ -1,27 +1,18 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
-	"path"
 	"path/filepath"
-	"strings"
 
-	cuetocu2 "github.com/ncirocco/cue-to-cu2"
-	binmerge "github.com/ncirocco/psx-bin-merge"
-	psxserialnumber "github.com/ncirocco/psx-serial-number"
+	"github.com/ncirocco/psio-helper/bin"
+	"github.com/ncirocco/psio-helper/cu2"
+	"github.com/ncirocco/psio-helper/files"
+	"github.com/ncirocco/psio-helper/images"
+	"github.com/ncirocco/psio-helper/multidisc"
 )
-
-const cu2Extension string = "cu2"
-const cueExtension string = "cue"
-const binExtension string = "bin"
-const imagesEndpoint string = "https://ncirocco.github.io/PSIO-Library/images/covers_by_id/%s.bmp"
-const fileNameMaxLength int = 60
 
 func main() {
 	defaultOriginDir, err := os.Getwd()
@@ -45,6 +36,9 @@ func main() {
 	imagesCmd := flag.NewFlagSet("images", flag.ExitOnError)
 	imagesDirPtr := imagesCmd.String("dir", defaultOriginDir, "Directory containing the bin files to get the images")
 
+	multidiscCmd := flag.NewFlagSet("multidisc", flag.ExitOnError)
+	multidiscDirPtr := multidiscCmd.String("dir", defaultOriginDir, "Directory containing the multidisc bin files")
+
 	flag.Usage = usage
 
 	flag.Parse()
@@ -67,19 +61,25 @@ func main() {
 		}
 	case "merge":
 		mergeCmd.Parse(os.Args[2:])
-		err = mergeBins(*mergeDirPtr, *mergeDestinationDirPtr)
+		err = bin.Merge(*mergeDirPtr, *mergeDestinationDirPtr)
 		if err != nil {
 			log.Fatal(err)
 		}
 	case "cu2":
 		cu2Cmd.Parse(os.Args[2:])
-		err = generateCu2(*cu2DirPtr, *cu2RemovePtr)
+		err = cu2.Generate(*cu2DirPtr, *cu2RemovePtr)
 		if err != nil {
 			log.Fatal(err)
 		}
 	case "images":
 		imagesCmd.Parse(os.Args[2:])
-		err = getImages(*imagesDirPtr)
+		err = images.GetImages(*imagesDirPtr)
+		if err != nil {
+			log.Fatal(err)
+		}
+	case "multidisc":
+		multidiscCmd.Parse(os.Args[2:])
+		err = multidisc.Multidisc(*multidiscDirPtr)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -94,91 +94,32 @@ func all(originDir string, destinationDir string) error {
 		return err
 	}
 
-	err := mergeBins(originDir, destinationDir)
+	err := bin.Merge(originDir, destinationDir)
 	if err != nil {
 		return err
 	}
 
-	err = generateCu2(destinationDir, true)
+	err = cu2.Generate(destinationDir, true)
 	if err != nil {
 		return err
 	}
 
-	err = getImages(destinationDir)
+	err = multidisc.Multidisc(destinationDir)
 	if err != nil {
 		return err
 	}
 
-	err = trimFileNames(destinationDir)
+	err = images.GetImages(destinationDir)
+	if err != nil {
+		return err
+	}
+
+	err = files.TrimNames(destinationDir)
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func mergeBins(originDir string, destinationDir string) error {
-	cueFiles, err := getFilesByExtension(originDir, cueExtension)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("Attempting to merge bins for %d found CUE sheets\n\n", len(cueFiles))
-
-	for _, cue := range cueFiles {
-		fmt.Printf("Merging bin for %s\n", filepath.Base(cue))
-		err := binmerge.Merge(cue, destinationDir)
-		if err != nil {
-			fmt.Printf("Error processing %s. Message: %s\n", cue, err)
-		}
-	}
-
-	fmt.Print("\n\n")
-
-	return nil
-}
-
-func generateCu2(dir string, removeCue bool) error {
-	cueFiles, err := getFilesByExtension(dir, cueExtension)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("Attempting to generate CU2 sheets for %d found CUE sheets\n\n", len(cueFiles))
-
-	for _, cue := range cueFiles {
-		fmt.Printf("Generating cu2 for %s\n", filepath.Base(cue))
-		err := cuetocu2.Generate(cue, filepath.Dir(cue))
-		if err != nil {
-			fmt.Printf("Error processing %s. Message: %s\n", cue, err)
-		}
-
-		if removeCue {
-			os.Remove(cue)
-		}
-	}
-
-	fmt.Print("\n\n")
-
-	return nil
-}
-
-func getFilesByExtension(path string, extension string) ([]string, error) {
-	var files []string
-	err := filepath.Walk(path,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-
-			if filepath.Ext(path) == "."+extension {
-				files = append(files, path)
-			}
-
-			return nil
-		})
-
-	return files, err
 }
 
 func usage() {
@@ -188,87 +129,8 @@ func usage() {
 	fmt.Println("  merge - Merges all the bin files in a given directory")
 	fmt.Println("  cu2 - Generates the cu2 sheet for each cue sheet in the given directory")
 	fmt.Println("  image - Downloads covers for the bin files in the given directory")
+	fmt.Println("  multidisc - Groups the discs that belong to the same game and generates the necessary multidisc.lst files")
 	fmt.Print("\n")
 	fmt.Printf("To see more details for a particular command run %s <command> -h\n", os.Args[0])
 	fmt.Print("\n")
-}
-
-func getImages(dir string) error {
-	bins, err := getFilesByExtension(dir, binExtension)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("Attempting to download covers for %d found discs\n\n", len(bins))
-
-	for _, bin := range bins {
-		fmt.Printf("Downloading image for %s\n", filepath.Base(bin))
-		serial, err := psxserialnumber.GetSerial(bin)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-
-		err = downloadFile(serial, filepath.Dir(bin))
-		if err != nil {
-			fmt.Printf("%s for %s - serial %s\n", err, bin, serial)
-			continue
-		}
-	}
-
-	fmt.Print("\n\n")
-
-	return nil
-}
-
-func downloadFile(code string, dir string) error {
-	resp, err := http.Get(fmt.Sprintf(imagesEndpoint, strings.ToLower(code)))
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return errors.New("Image not found")
-	}
-
-	out, err := os.Create(filepath.Join(dir, path.Base(resp.Request.URL.String())))
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, resp.Body)
-	return err
-}
-
-// PSIO does not support files with names longer than 60 chars.
-func trimFileNames(dir string) error {
-	err := filepath.Walk(dir,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-
-			ext := filepath.Ext(path)
-			if (ext != "."+binExtension && ext != "."+cueExtension && ext != "."+cu2Extension) || len(filepath.Base(path)) <= fileNameMaxLength {
-				return nil
-			}
-
-			fmt.Printf("File name for %s is longer than 60, trimming it.\n", filepath.Base(path))
-
-			newName := filepath.Join(filepath.Dir(path), filepath.Base(path)[:fileNameMaxLength-len(ext)]+ext)
-
-			if _, err := os.Stat(newName); err == nil {
-				fmt.Printf("can't rename %s. please rename it manually", filepath.Base(path))
-
-				return nil
-			}
-
-			os.Rename(path, newName)
-
-			return nil
-		})
-
-	return err
 }
