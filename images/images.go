@@ -10,12 +10,17 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/ncirocco/psio-helper/files"
 	psxserialnumber "github.com/ncirocco/psx-serial-number"
 )
 
 const imagesEndpoint string = "https://ncirocco.github.io/PSIO-Library/images/covers_by_id/%s.bmp"
+
+const concurrentOpenedFiles = 25
+
+var sem = make(chan struct{}, concurrentOpenedFiles)
 
 // GetImages downloads the images for the given directory
 func GetImages(dir string) error {
@@ -26,24 +31,36 @@ func GetImages(dir string) error {
 
 	fmt.Printf("Attempting to download covers for %d found discs\n\n", len(bins))
 
+	var wg sync.WaitGroup
 	for _, bin := range bins {
-		fmt.Printf("Downloading image for %s\n", filepath.Base(bin))
-		serial, err := psxserialnumber.GetSerial(bin)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-
-		err = downloadFile(serial, filepath.Dir(bin))
-		if err != nil {
-			fmt.Printf("%s for %s - serial %s\n", err, bin, serial)
-			continue
-		}
+		wg.Add(1)
+		go getImage(&wg, bin)
 	}
 
+	wg.Wait()
 	fmt.Print("\n\n")
 
 	return nil
+}
+
+func getImage(wg *sync.WaitGroup, bin string) {
+	sem <- struct{}{}
+
+	defer func() { <-sem }()
+
+	defer wg.Done()
+	fmt.Printf("Downloading image for %s\n", filepath.Base(bin))
+	serial, err := psxserialnumber.GetSerial(bin)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	err = downloadFile(serial, filepath.Dir(bin))
+	if err != nil {
+		fmt.Printf("%s for %s - serial %s\n", err, bin, serial)
+		return
+	}
 }
 
 func downloadFile(code string, dir string) error {
