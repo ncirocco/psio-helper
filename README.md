@@ -91,5 +91,26 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 `./psioHelper` multidisc -dir="MyISOsFolder"
 
 
+## Development
+### Pre requirements
+Have Go installed and configured in your local environment. More information can be found here https://golang.org/doc/install
+
+### Download and usage
+Run the following commands
+
+`go get github.com/ncirocco/psio-helper`
+
+`cd $GOPATH/src/github.com/ncirocco/psio-helper/`
+
+To run the application use
+
+`go run main.go [command] [arguments]`
+
+To build the aplication use
+
+`Make build`
+
+The Windows, Linux and MacOS executables will be placed in the `build` folder
+
 ## Disclaimer
 This software comes with no warranties of any kind whatsoever. Use it at your own risk.
