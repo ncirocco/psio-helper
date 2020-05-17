@@ -114,3 +114,11 @@ The Windows, Linux and MacOS executables will be placed in the `build` folder
 
 ## Disclaimer
 This software comes with no warranties of any kind whatsoever. Use it at your own risk.
+
+## References used
+
+Thanks to the work from NRGDEAD and putnam, their projects saved me a lot of research time.
+
+https://github.com/NRGDEAD/Cue2cu2
+
+https://github.com/putnam/binmerge/
