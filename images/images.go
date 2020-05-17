@@ -45,10 +45,9 @@ func GetImages(dir string) error {
 
 func getImage(wg *sync.WaitGroup, bin string) {
 	sem <- struct{}{}
-
 	defer func() { <-sem }()
-
 	defer wg.Done()
+
 	fmt.Printf("Downloading image for %s\n", filepath.Base(bin))
 	serial, err := psxserialnumber.GetSerial(bin)
 	if err != nil {
