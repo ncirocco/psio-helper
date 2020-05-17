@@ -46,7 +46,7 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 `destinationDir`: Directory to store the processed files, if it doesn't exists it gets created. If this argument is not passed it creates an `output` folder in the current directory.
 
 #### Example
-`./psioHelper auto -dir="MyISOsFolder" -destinationDir="newEmptyFolder"`
+`./psioHelper auto -dir MyISOsFolder -destinationDir newEmptyFolder`
 
 ### Merge
 `./psioHelper merge` - Merges all the bin files in a given directory. 
@@ -57,7 +57,7 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 `destinationDir`: Directory to store the processed files. By default it creates an `output` folder in the current directory.
 
 #### Example
-`./psioHelper merge -dir="MyISOsFolder" -destinationDir="newEmptyFolder"`
+`./psioHelper merge -dir MyISOsFolder -destinationDir newEmptyFolder`
 
 ### Cu2
 `./psioHelper cu2` - Generates the cu2 sheet for each cue sheet in the given directory.
@@ -68,7 +68,7 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 `removeCue`: If passed the original cue files will be removed
 
 #### Example
-`./psioHelper cu2 -dir="MyISOsFolder" -removeCue`
+`./psioHelper cu2 -dir MyISOsFolder -removeCue`
 
 ### Images
 `./psioHelper images` - Downloads covers for the bin files in the given directory.
@@ -77,7 +77,7 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 `dir`: "Directory containing the bin files to get the images. By default uses the current directory.
 
 #### Example
-`./psioHelper` images -dir="MyISOsFolder"
+`./psioHelper images -dir=MyISOsFolder`
 
 ### Multidisc
 `./psioHelper multidisc` - Groups the discs that belong to the same game and generates the necessary multidisc.lst files
@@ -88,7 +88,7 @@ Open a terminal, navigate to the location where the PSIOHelper binary is placed 
 **IMPORANT:** This command will modify your files without creating a backup.
 
 #### Example
-`./psioHelper` multidisc -dir="MyISOsFolder"
+`./psioHelper multidisc -dir MyISOsFolder`
 
 
 ## Development
@@ -108,7 +108,7 @@ To run the application use
 
 To build the aplication use
 
-`Make build`
+`make build`
 
 The Windows, Linux and MacOS executables will be placed in the `build` folder
 
